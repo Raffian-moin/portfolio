@@ -15,7 +15,8 @@ class SkillController extends Controller
      */
     public function index()
     {
-        //
+        $skills = Skill::all();
+        return view ('admin.skill.index', compact("skills"));
     }
 
     /**
@@ -78,7 +79,9 @@ class SkillController extends Controller
      */
     public function edit(Skill $skill)
     {
-        //
+        $skill = Skill::find($skill->id);
+
+        return view('admin.skill.edit', compact("skill"));
     }
 
     /**
@@ -90,7 +93,27 @@ class SkillController extends Controller
      */
     public function update(Request $request, Skill $skill)
     {
-        //
+        try {
+            $inputs = [];
+            $inputs = $request->all();
+
+            $validator = Validator::make($inputs, [
+                'name' => 'required|unique:skills|max:255',
+                'level' => 'required|numeric',
+            ]);
+
+            if ($validator->fails()) {
+                return redirect('skills/create')
+                ->withErrors($validator)
+                    ->withInput();
+            } else {
+                $skill = Skill::find($skill->id);
+                $skill->update($inputs);
+                return redirect()->back()->with('success', 'Success');;
+            }
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
     /**
@@ -101,6 +124,6 @@ class SkillController extends Controller
      */
     public function destroy(Skill $skill)
     {
-        //
+        dd('ddd');
     }
 }

@@ -22,6 +22,7 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
+Route::post('skills/{id}/delete', [SkillController::class, 'destroy'])->name('skills.delete');
 Route::resource('skills', SkillController::class);
 
 require __DIR__.'/auth.php';
